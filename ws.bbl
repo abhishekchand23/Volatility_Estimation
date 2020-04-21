@@ -1,0 +1,130 @@
+\begin{thebibliography}{}
+
+\bibitem [\protect \citeauthoryear {%
+Garman%
+\ \BBA {} Klass%
+}{%
+Garman%
+\ \BBA {} Klass%
+}{%
+{\protect \APACyear {1980}}%
+}]{%
+garman1980}
+\APACinsertmetastar {%
+garman1980}%
+\begin{APACrefauthors}%
+Garman, M\BPBI B.%
+\BCBT {}\ \BBA {} Klass, M\BPBI J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1980}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {On the estimation of security price volatilities from
+  historical data} {On the estimation of security price volatilities from
+  historical data}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of business}{}{}{67--78}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Meilijson%
+}{%
+Meilijson%
+}{%
+{\protect \APACyear {2008}}%
+}]{%
+meilijson2008}
+\APACinsertmetastar {%
+meilijson2008}%
+\begin{APACrefauthors}%
+Meilijson, I.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2008}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The Garman-Klass volatility estimator revisited} {The
+  garman-klass volatility estimator revisited}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{arXiv preprint arXiv:0807.3492}{}{}{}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Parkinson%
+}{%
+Parkinson%
+}{%
+{\protect \APACyear {1980}}%
+}]{%
+parkinson1980}
+\APACinsertmetastar {%
+parkinson1980}%
+\begin{APACrefauthors}%
+Parkinson, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1980}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The extreme value method for estimating the variance of
+  the rate of return} {The extreme value method for estimating the variance of
+  the rate of return}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of business}{}{}{61--65}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Rogers%
+\ \BBA {} Satchell%
+}{%
+Rogers%
+\ \BBA {} Satchell%
+}{%
+{\protect \APACyear {1991}}%
+}]{%
+rogers1991}
+\APACinsertmetastar {%
+rogers1991}%
+\begin{APACrefauthors}%
+Rogers, L\BPBI C\BPBI G.%
+\BCBT {}\ \BBA {} Satchell, S\BPBI E.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1991}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Estimating variance from high, low and closing prices}
+  {Estimating variance from high, low and closing prices}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Annals of Applied Probability}{}{}{504--512}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Yang%
+\ \BBA {} Zhang%
+}{%
+Yang%
+\ \BBA {} Zhang%
+}{%
+{\protect \APACyear {2000}}%
+}]{%
+yang2000}
+\APACinsertmetastar {%
+yang2000}%
+\begin{APACrefauthors}%
+Yang, D.%
+\BCBT {}\ \BBA {} Zhang, Q.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2000}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Drift-independent volatility estimation based on high,
+  low, open, and close prices} {Drift-independent volatility estimation based
+  on high, low, open, and close prices}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Journal of Business}{73}{3}{477--492}.
+\PrintBackRefs{\CurrentBib}
+
+\end{thebibliography}

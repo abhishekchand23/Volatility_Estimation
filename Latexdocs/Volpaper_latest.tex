@@ -1,0 +1,1377 @@
+\documentclass[12pt]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage[margin=1.0in]{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for rotated page geometry
+\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex	
+	
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage{apacite}
+%SetFonts
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage{apacite}
+
+\usepackage{array} % loaded by booktabs, but included here for explicitness
+\usepackage{booktabs}
+\usepackage{siunitx}
+\newcolumntype{L}{@{}l@{}} % a left column with no intercolumn space on either side
+\newcommand{\mc}[1]{\multicolumn{1}{c}{#1}} % shorthand macro for column headings
+
+\usepackage[toc,page]{appendix}
+
+\usepackage{natbib}
+
+%SetFonts
+\title{\textbf{A Computational Method to Generate Family of Extreme Value Volatility Estimators}}
+\author{Rakesh Nigam\footnote{Professor, Madras School of Economics}, Prachi Srivastava\footnote{Paris School of Economics}, Parush Arora\footnote{University of California, Irvine}, Abhishek Chand\footnote{Ernst and Young, India}}
+%\date{December 23, 2019}
+\date{\today}
+
+\begin{document}  
+
+\maketitle
+\begin{abstract}
+An algorithm to construct a family of unbiased extreme value volatility estimators is developed when the log prices of assets follow 
+simple Brownian motion with drift and jump. From this family of estimators, the minimum variance estimator can be computed and 
+is found to be competitive to the estimators of Parkinson and Yang and Zhang (no drift and positive jump case). 
+Other estimators like the Garman and Klass and the Rogers and Satchell  are recovered. 
+The novelty of this approach is that it is constructive and, moreover it can be extended to compute estimators when prices follow more realistic models..\\
+\\ \textbf{Keywords: }Extreme value, Volatility estimator, Brownian motion, Drift and jump.
+\end{abstract}
+
+\renewcommand{\footnoterule}{%
+  \kern -3pt
+  \hrule width \textwidth height 1pt
+  \kern 2pt
+}
+
+\newpage
+\tableofcontents
+\newpage
+\section{Introduction}
+\label{sec:intro}
+
+This paper estimates the volatility of a financial security, whose log-price process (for short it will be called the price) 
+at time $t$ is $ P_{t}  = \mu t + \sigma B_{t} $, with two constant unknown parameters, the drift and volatility, $\mu$ and $\sigma$ respectively. 
+The stochastic nature of $P_t$ is inherited from the standard Brownian motion $B_t$.   Using extreme value information of the stochastic process $P_t$ such as the open, high, low and close prices of trading days, the volatility is estimated.  It also incorporates the jump in the estimation procedure, which is the difference between the closing price of the previous day $(t-1)$ and the opening price of the current day $t$. The role of volatility cannot be understated in pricing options in the Black-Scholes framework and also for modelling portfolio risk.
+\par	The classical variance estimator used in the literature uses just close-to-close prices. The main drawback of this approach is that it ignores extreme value information present in the log-price process. By including the extreme values in the estimation process reduces the variance of the volatility estimator .Parkinson \footnote{\citealp{parkinson1980}} and Garman \& Klass\footnote{\citealp{garman1980}} constructed extreme value estimators for the case with no jumps and zero drift. Parkinson's estimator is based only on high and low prices. His estimator is unbiased and 2.5-5 times better than the classical estimator.Garman \& Klass proposed several estimators and showed that efficiency could be improved by just adding more information into the estimator. He doubled the efficiency of the estimator by just adding the opening price. By including high, low, open and close price, the estimator had lower variance (efficiency$ = 7.4$). 
+\par As an extension of Garman and Klass, Meilijson\footnote{\citealp{meilijson2008}} provided a maximum likelihood of unbiased volatility estimator using a different approach. 
+He separated the security price data into two data sets depending upon whether the normalized closing price of a day is above zero or below. 
+For example, in 100 days of data, 40 days have normalized closing price as positive, and 60 days have normalized closing price as negative. 
+So, the 40 days formed one data set, and 60 days formed another. The probability of any day to fall in any of the two data sets is 0.5. 
+Then he calculated the expectations of the normalized high, low, opening and closing values separately for the two datasets and derived a new estimator. 
+The estimator yielded an efficiency of 7.73, which is higher than Garman-Klass. 
+In the case of non-zero drift, Parkinson, Meilijson and Garman and Klass become biased.
+Rogers \& Satchell \footnote{\citealp{rogers1991}} proposed a drift independent unbiased estimator that generalized both Parkinson's and Garman and Klass's estimators for the case of non-zero drift. The efficiency of the estimator is 6.
+Yang \& Zhang\footnote{\citealp{yang2000}} generalized Rogers \& Satchell's estimator by incorporating jumps between trading days. Adding jumps increases the efficiency of the estimator as efficiency is a function of the jump.
+\par The contribution of this paper is to provide a coherent framework under which all the previous estimators can be rederived. The paper develops a methodology (which uses null space solution) which gives the family of volatility estimators. The methodology is applicable to price movement modelled as Brownian motions with different assumptions (drift and jump) and can be generalized to more realistic movements. Through this, we have validated and re derived the minimum variance estimator for different Brownian motions assumptions (drift and jump)and improved upon two cases:
+\begin{enumerate}
+\item Best minimum variance estimator for security price modelled as Brownian motion with no drift and no jumps which uses only high and low price data. (Case of Parkinson)
+\item Best minimum variance estimator for security price modelled as Brownian motion with no drift but positive jump using high, low, opening and closing prices.
+ \end{enumerate}
+
+\par Data consists of simulations of 700,000 time steps (representing a single day) to make it closer to the continuous case. Increasing the number of time steps taken between the interval [0, 1],  improves the approximation recovered for volatility as discussed by Rogers \& Satchell. Such 20,000 days are simulated to calculate the expectations of high, low, opening and closing values. These extreme values are available on websites and newspapers which makes the improved estimator very much applicable in real-life scenarios.
+\par This paper is divided into four sections. Section 2 explains and outlines the mathematical modelling and hypothesis for our model, along with a new approach that we recommend. Section 3 sums upon the findings from the simulations. Section 4 is the conclusion. \\
+
+
+\section{Mathematical Framework for calculating Volatility Estimator}
+\subsection{Graphical Representation}
+We start by explaining the structural model for price movement. For convenience, we are assuming the time interval of price as $t \in [0,1]$ representing a single day. There are two parts to the day; the first one is the close of trading (where the movement of price is not observable) and the second where trading takes place. Figure 1 shows the price movement graphically.
+ 
+\begin{figure}
+	\centering
+%	\includegraphics[height=\baselineskip{sec_price_mov.png}
+	 \includegraphics[width=0.8\textwidth]{sec_price_mov.png}
+	\caption{Security Price Movement}
+	\label{fig:SPM}
+\end{figure}
+
+\par The trading is closed initially in the interval $[0,f]$ and at time $t_0$ we observe $C_0$ (yesterday's closing price).The trading starts when the price is $O_1$ (today's opening price) at time $t=f$, and the price movement is observable in the interval $[f,1]$. The following are the notations taken from Garman \& Klass paper.
+
+
+\begin{itemize}
+	\item[--] $\sigma =$ unknown constant volatility of price change
+\item[--]$\mu= $drift
+\item[--] $f =$ fraction of the day where trading is closed
+\item[--] $C_0 = B(0)$, yesterday's closing price
+\item[--] $O_1 = B(f)$, today's opening price
+\item[--] $H_1 = max B(t), f < t < 1$, today's high
+\item[--] $L_1 = min B(t), f < t < 1$, today's low
+\item[--] $C_1 = B(1)$, today's close
+\item[--] $u = H_1 - O_1$, the normalized high
+\item[--] $d = L_1 - O_1$, the normalized low
+\item[--] $c = C_1 - O_1$, the normalized close
+\item[--] $o = O_1 - C_0$, the normalized open
+
+\end{itemize}
+The price movement modelled as Brownian motion is generated using simulations. 
+
+%\begin{figure}
+%	\centering
+%	 \includegraphics{bmsim.png}
+%	\caption{Simulated Price Movement}
+%	\label{fig:SPM2}
+%\end{figure}
+
+\subsection{Estimator Derivation using Constraint Optimization (Classical Approach)}
+
+Given below is the step by step standard procedure to derive the minimum variance unbiased estimator. 
+\subsubsection{Defining the Unbiased Constraint}
+The estimator for volatility\footnote{Volatility is $\sqrt{\hat{\sigma}^2}$. For the ease of representation we will be using the variance $\sigma^2$} of price movement has a standard form which is represented as a function of extreme values.
+\begin{equation}
+ \hat{\sigma}^2 = \sum_{i=1}^{n} a_i x_i
+\end{equation}
+
+$a_i$'s are the weights and $x_i$'s are the quadratic extreme value terms like $u^2, d^2, c^2$ etc. 
+The number of terms $(n)$ used to construct the estimator will differ depending upon the Brownian motion assumptions.
+The unbiased constraint can be derived by taking the expectations of $(1)$.
+
+\begin{equation}
+ E(\hat{\sigma}^2) = \sum_{i=1}^{n} a_i E(x_i)
+\end{equation}
+
+\begin{equation}
+ 1= \sum_{i=1}^{n} a_i (E(x_i)/\sigma^2)
+\end{equation}
+
+\begin{equation}
+ 1= \sum_{i=1}^{n} a_i c_i
+\end{equation}
+
+\begin{equation}
+ 1= \vec{A}\vec{C}
+\end{equation}
+The expected values\footnote{\citealp{garman1980} and \citealp{meilijson2008}, both provide the second and fourth moment of the prices} of quadratic extreme values $E(x_i )$ have been derived in earlier literature.
+
+\subsubsection{Minimize the variance covariance matrix $(\sum)$with respect to the unbiased constraint}
+
+The optimal $a_i$'s will come from minimizing the variance-covariance matrix of the volatility estimator with respect to 
+the unbiased constraint. The optimization problem will have the following form.
+
+Min:$$
+	 \begin{bmatrix}
+		a_1 & a_2  \dots a_n
+	\end{bmatrix} 
+	\begin{bmatrix}
+	E(x_1^4)&E(x_1^2 x_2^2)&\dots&\dots&E(x_1^2 x_n^2)\\
+	E(x_2^2 x_1^2)& E(x_2^4)&\dots&\dots&E(x_2^2 x_n^2)\\
+	\vdots&\vdots&\ddots&\dots&\vdots\\
+	\vdots&\vdots&\vdots&\ddots&\vdots\\
+	E(x_n^2 x_1^2)&E(x_n^2 x_2^2)&\dots&\dots&E(x_n^4)
+	\end{bmatrix}
+	\begin{bmatrix}
+		a_1\\
+		a_2\\
+		\vdots\\
+		\vdots\\
+		a_n 
+	\end{bmatrix} =  \vec{A^T}\Pi\vec{A} $$ \\
+	\begin{equation}
+	s.t\quad  1= \vec{A}\vec{C}
+\end{equation}
+
+
+The values of the expectation terms in $\Pi$ for various cases of Brownian motion were provided by the authors and are reconfirmed through simulations. 
+We can use the Lagrange multiplier and its first order conditions to solve for $a_i$'s.
+
+\begin{equation}
+L(\vec{A},\lambda)=\vec{A^T}  \Pi \vec{A} + \lambda( \vec{A}\vec{C}-1)
+\end{equation}
+
+\begin{equation}
+	\frac{\partial L(\vec{A},\lambda)}{\partial \vec{A}} = 2\Pi\vec{A}+\lambda \vec{C}=\vec{0} 
+	\end{equation}
+
+\begin{equation}
+\frac{\partial L(\vec{A},\lambda)}{\partial \vec{A}} = \vec{A}\vec{C}=1
+\end{equation}
+
+
+Solving (8) and (9) will give the vector $\vec{A}$ which will minimize the variance of the estimator.
+
+\subsection{New Approach to derive the family of estimators and the minimum variance estimator}
+
+An alternative approach, discussed below, gives all the possible unbiased estimators (call it the family of estimator) for the given Brownian motion case and the minimum variance estimator among it. The approach uses the complete solution which comprises of a particular solution and a homogeneous solution (null space) to find the family of estimators. 
+
+\subsubsection{	Derive the basis vectors of the null space (Homogeneous solution)}
+We start with the $E(x_i)$ from the unbiased constraint (2) and construct a general matrix that will have different values of 
+$E(x_i)$'s based on different assumptions of Brownian motion considered. The following matrix form will be used to derive the basis vector of the null space.
+
+\begin{equation}
+	\vec{K}= 
+	\begin{bmatrix}
+	E(x_{C_1,1})&E(x_{C_1,2})&\dots&\dots&E(x_{C_1,m})\\
+	E(x_{C_2,1})& E(x_{C_2,2})&\dots&\dots&E(x_{C_2,m})\\
+	\vdots&\vdots&\ddots&\dots&\vdots\\
+	\vdots&\vdots&\vdots&\ddots&\vdots\\
+	E(x_{C_n,1})&E(x_{C_n,2})&\dots&\dots&E(x_{C_n,m})
+	\end{bmatrix}
+\end{equation}
+\\
+
+Each row has expected value of quadratic extreme values for the given assumptions $C_i$ (a combination of drift, jump and volatility). The matrix will have  $n$ rows as $n$ distinct values of volatility is considered and $m$ columns which are the total number of quadratic extreme values considered to form the estimator. Each column has different expected values of the same quadratic extreme value as each row correspond to different volatility, drift or jump. Solving $\vec{K}\vec{x}=0$ will give the basis vectors $\vec{ x}$ which will form the null space or the homogeneous solution which will form our family of estimator.
+ 
+
+\subsubsection{Calculate the Particular Solution}
+The particular solution is easy to calculate by using the unbiased constraint (2) and $\vec{K}$. Solving $\vec{K}\vec{x}= \vec{\sigma}^2$  will give the particular solution.
+\begin{equation}
+	\begin{bmatrix}
+	E(x_{C_1,1})&E(x_{C_1,2})&\dots&\dots&E(x_{C_1,m})\\
+	E(x_{C_2,1})& E(x_{C_2,2})&\dots&\dots&E(x_{C_2,m})\\
+	\vdots&\vdots&\ddots&\dots&\vdots\\
+	\vdots&\vdots&\vdots&\ddots&\vdots\\
+	E(x_{C_n,1})&E(x_{C_n,2})&\dots&\dots&E(x_{C_n,m})
+	\end{bmatrix}
+	\begin{bmatrix}
+		x_1\\
+		x_2\\
+		\vdots\\
+		\vdots\\
+		x_m 
+	\end{bmatrix}=
+	\begin{bmatrix}
+		\sigma^2_{C_1}\\
+		\sigma^2_{C_2}\\
+		\vdots\\
+		\vdots\\
+		\sigma^2_{C_n}\\
+	\end{bmatrix}
+\end{equation}
+
+$\vec{\sigma}^2 $ is the vector containing values of $\sigma^2$ for various assumptions or condition $C_i$. As the quadratic extreme values are a linear 
+function of $\sigma^2$, we can have many vectors $\vec{x}$ which will solve the problem. Thus, we will choose and stick to one such vector which will 
+solve the matrix equation problem and will be termed as our particular solution. The values in basis vectors will change accordingly with the particular solution chosen. We have provided the particular solutions for all the cases in the result section that we have considered corresponding to the homogeneous solution.
+
+\subsubsection{Constructing the family of unbiased estimators}
+After calculating the particular solution and the homogeneous solution, we can represent our findings as the complete solution for calculating $a_i$'s.
+
+\begin{equation}
+\begin{bmatrix}
+		a_1\\
+		a_2\\
+		\vdots\\
+		\vdots\\
+		a_n 
+	\end{bmatrix} =\alpha_0
+	\begin{bmatrix}
+		p_1\\
+		p_2\\
+		\vdots\\
+		\vdots\\
+		p_n
+	\end{bmatrix} 
+	+\alpha_1
+	\begin{bmatrix}
+		b_{11}\\
+		b_{21}\\
+		\vdots\\
+		\vdots\\
+		b_{n1}
+	\end{bmatrix} 
+	+\alpha_2
+	\begin{bmatrix}
+		b_{12}\\
+		b_{22}\\
+		\vdots\\
+		\vdots\\
+		b_{n2}
+	\end{bmatrix} 
+	+\alpha_3
+	\begin{bmatrix}
+		b_{13}\\
+		b_{23}\\
+		\vdots\\
+		\vdots\\
+		b_{n3}
+	\end{bmatrix} + \hdots \hdots \hdots \hdots+\alpha_m
+	\begin{bmatrix}
+		b_{1m}\\
+		b_{2m}\\
+		\vdots\\
+		\vdots\\
+		b_{nm}
+	\end{bmatrix} 
+\end{equation} \hspace{200pt} OR
+
+\begin{equation}
+\vec{a_l} = \alpha_0  \vec{p}+ \alpha_1  \vec{B_1 }+\alpha_2 \vec{B_2 }+\alpha_3 \vec{B_3 }+\hdots \hdots \hdots+\alpha_m \vec{B_m }  
+\end{equation}
+
+$\vec{p}$ is the particular solution vector. $b_{ij}$'s are the $i^{th}$ term of the $j^{th}$ basis vector $\vec{B}_i $ of the null space corresponding 
+to each $a_i$'s respectively. $\alpha_j$'s are the coefficients which take values in the interval $(-\infty,\infty)$ . Different values of $\alpha_j$'s will give different estimators. Hence, the family of estimator is formed which has infinite unbiased estimators based on different values of $\alpha_j$'s. One of the combinations of $\alpha_j$'s will give the minimum variance unbiased estimator.
+
+\subsubsection{ Derive the best estimator among the family of estimator}
+To find that combination of $\alpha_j$'s which gives the estimator with the minimum variance among the family of estimators, we will form 
+a quadratic programming problem. For this, we will construct a matrix which has the particular solution and all the basis vectors in it.
+
+
+\begin{equation}
+ \begin{bmatrix}
+	 p_{1}&b_{11}&\dots&\dots&b_{1m}\\
+	p_{2}&b_{21}&\dots&\dots&b_{2m}\\
+	\vdots&\vdots&\ddots&\dots&\vdots\\
+	\vdots&\vdots&\vdots&\ddots&\vdots\\
+	p_{n}&b_{n1}&\dots&\dots&b_{nm}\\
+	\end{bmatrix}= \vec{N}
+\end{equation}
+
+We will use $\vec{N}$ to find the minimum variance estimator. The minimization problem looks like the following\\
+$$
+	Min: \quad  \vec{\alpha}\vec{N^T} \Pi \vec{N}  \vec{\alpha^T}    $$ 
+	\begin{equation}
+	s.t\quad  1= \alpha_0
+\end{equation}
+
+
+Solving the constraint optimization\footnote{CVXOPT is used for optimization. CVXOPT is a free software package for convex optimization based on the Python programming language.} problem will give the $\alpha_j$'s which will give the minimum variance volatility estimator
+
+\section{Results: Derivation of the family of estimator using the new approach}
+In section 2, we explained the derivation of the family of estimators for a given Brownian motion using the new approach. 
+In this section, we will show how the complete solution looks like for Brownian motion with varying assumptions and also show the best estimators for two distinct cases. 
+%BROWNIAN MOTION WITH ZERO DRIFT AND NO JUMP
+\subsection{Brownian Motion with zero drift and no jump}
+%PARKINSON CASE
+\subsubsection{Parkinson Case}
+\begin{enumerate}
+%UC
+\item \textbf{Expectation of the second order moments:}\newline
+Generating function analysis helps in calculating the following moments\footnote{These moments are calculated in \citealp{garman1980}. Oldrich Vasicek had provided Garman \& Klass with the generating function}
+$$ E(u^2 )=\sigma^2\quad  E(d^2 )=\sigma^2\quad  E(ud)=(1-2\log 2)\sigma{^2}  $$
+%VAR COV MATRIX
+\item \textbf{Variance-Covariance Matrix $\sum_{P} $:}\\
+Using the fourth moments we can get the variance covariance matrix.
+	$$  \begin{bmatrix}
+			E(u^4 )&E(u^2 d^2 )&E(u^3 d)\\
+			E(u^2 d^2 )&E(d^4 )&E({ud}^3 )\\
+			E(u^3 d)&E({ud}^3 )&E(u^2 d^2 ) 
+			\end{bmatrix}=
+			\begin{bmatrix}
+			3\sigma^4&0.2274\sigma^4&-0.4318\sigma^4\\
+			0.2274\sigma^4&3\sigma^4&-0.4318\sigma^4\\
+			-0.4318\sigma^4&-0.4318\sigma^4&0.2274\sigma^4 
+			\end{bmatrix}
+$$
+%K MATRIX
+\item\textbf{ $\vec{K}$ to calculate the family of estimators:}\\
+$$\vec{K_P}=
+\begin{bmatrix}
+E(u_{\sigma_1}^2)& E(d_{\sigma_1}^2)&E(ud_{\sigma_1})\\
+E(u_{\sigma_2}^2)& E(d_{\sigma_2}^2)&E(ud_{\sigma_2})\\
+E(u_{\sigma_3}^2)& E(d_{\sigma_3}^2)&E(ud_{\sigma_3})\\
+E(u_{\sigma_4}^2)& E(d_{\sigma_4}^2)&E(ud_{\sigma_4})\\
+E(u_{\sigma_5}^2)& E(d_{\sigma_5}^2)&E(ud_{\sigma_5})\\
+E(u_{\sigma_6}^2)& E(d_{\sigma_6}^2)&E(ud_{\sigma_6})\\
+\end{bmatrix}
+=\begin{bmatrix}
+\sigma_1{^2} &\sigma_1{^2} & (1-2\log 2)\sigma_1{^2} \\
+\sigma_2{^2} &\sigma_2{^2} & (1-2\log 2)\sigma_2{^2} \\
+\sigma_3{^2} &\sigma_3{^2} & (1-2\log 2)\sigma_3{^2} \\
+\sigma_4{^2} &\sigma_4{^2} & (1-2\log 2)\sigma_4{^2} \\
+\sigma_5{^2} &\sigma_5{^2} & (1-2\log 2)\sigma_5{^2} \\
+\sigma_6{^2} &\sigma_6{^2} & (1-2\log 2)\sigma_6{^2} \\
+\end{bmatrix}$$\\
+Imposing a condition $(C_i=i$, $i$ $\epsilon $ $\mathbb N)$ on the underlying characteristic of the process reduces the  above matrix to a row matrix. Thus, this matrix will never be a full rank matrix and by the rank nullity theorem there will always be an existence of null space.  
+%COMP CASE
+\item \textbf{Complete Case:}\\
+To calculate the Parkinson's estimator, we can show a similar form of family of estimator with a smaller number of quadratic extreme values involved. We can have multiple particular solutions satisfying the unbiased constraint. There is a liberty to choose any one of the particular solutions as all will result in the minimum variance estimator when optimized\footnote{The values of $\alpha$ adjust, resulting in similar coefficients $(a_i)$}.
+$$\begin{bmatrix}
+{a_{P}}^{u^2}\\
+{a_{P}}^{d^2}\\
+{a_{P}}^{ud}\\
+\end{bmatrix}=
+\begin{bmatrix}
+1\\
+0\\
+0\end{bmatrix}+\alpha_1
+\begin{bmatrix}
+-1\\
+1\\
+0\end{bmatrix}+\alpha_2
+\begin{bmatrix}
+0.3862944\\
+0\\
+1\end{bmatrix}
+$$
+Parkinson:\quad $\alpha_P: \alpha_1=0.2251\quad \alpha_2=-1.4232$ 
+
+%MV SOLUTION
+\item \textbf{Minimum Variance Solution:}\\
+Putting values of alpha in the complete case above gives the following solution:\\
+$${a_{P}}^{u^2}=0.225108\quad{a_{P}}^{d^2}=0.225108\quad{a_{P}}^{ud}=-1.423226$$
+
+Thus the estimator looks like:
+$${\hat{\sigma}_P}^2=0.225108 (u^2+d^2)-1.423226 {ud}$$
+Parkinson showed that his estimator was superior than the classical estimator, but he didn't show whether it was a minimum variance estimator. Thus, using new null space technique the minimum variance estimator can be derived which is  different from Parkinson's estimator. The Parkinson coefficents for $u^2/d^2$and $ud$ were 0.36067376 and -0.72134752 respectively\footnote{Parkinson estimator $ \hat{\sigma}^2=\frac{(u-d)^2}{4\log_e2}$ }.In Table 1 we show the variance and the efficiency of various estimators.The formula for Efficiency=$\frac{var(\hat{\sigma_0^2})}{var(\hat{y})}$, where $\hat{\sigma_0^2}$ is the classical estimator and $\hat{y}$ are other estimators. These results are simulated in Python.
+
+%\begin{table}
+%\centering
+%\caption{Variance and efficiency of Classical and Parkinson estimator}
+%\begin{tabular}{c ccc}
+%\hline\\[0.01ex]
+%&Classical Estimator &Parkinson Estimator &Parkinson Estimator (NT)
+%\\\hline\hline\\
+%Variance&1.990411696&0.402347017
+%&0.344197509
+%\\[1ex]
+%Efficiency&1&4.947002489&5.782760315\\
+%\end{tabular}
+%\end{table}
+
+\begin{table}[ht]
+\small
+\caption{Variance and efficiency of Classical and Parkinson estimator}
+\label{table:parkinson}
+\centering
+\begin{tabular}{LS@{}SLSLS}
+\midrule
+\hline \\
+\multicolumn{1}{@{\hspace{0.5em}}l}{} & \mc{Classical Estimator} & \mc{Parkinson Estimator} && \mc{Parkinson Estimator (NT*)}   \\[1ex]
+\midrule
+Variance&1.990411696&0.402347017&&0.344197509\\[1ex]
+Efficiency&1&4.947002489&&5.782760315\\
+\midrule\\[-2.5ex]
+\multicolumn{3}{l}{*New Technique}\\
+\end{tabular}
+\end{table}
+
+
+
+\end{enumerate}
+
+%GARMAN KLASS CASE
+\subsubsection{Garman and Klass Case}
+Garman \& Klass included the high and low price information to their estimator which tremendously improved the efficiency of the estimator. Below, their estimator is reproduced using the new technique.  
+\begin{enumerate}
+%UC
+\item \textbf{Expectation of the second order moments:}\\
+Here we list the expectations as derived by Garman \& Klass.
+$$ E(u^2 )=\sigma^2\quad  E(d^2 )=\sigma^2\quad  E(c^2 )=\sigma^2\quad E(ud)=(1-2\log 2)\sigma{^2} \quad $$
+$$E(uc )=0.5\sigma^2\quad E(dc)=0.5\sigma^2 $$
+
+%VAR COV MATRIX
+\item \textbf{Variance-Covariance Matrix $\sum_{GK} $:}\\
+The fourth moments are derived using the generating function.
+ $$  \begin{bmatrix}
+			E(u^4 )&E(u^2 d^2 )&E(u^2 c^2)&E(u^3 d^2 )&E(u^3 c )&E(u^2 dc)\\
+			E(u^2 d^2 )&E(d^4 )&E(d^2 c^2 )&E(u d^3 )&E(u^2 d^2 )&E(u^3 d)\\
+			E(u^2 c^2 )&E(d^2 c^2)&E(c^4)&E(udc^2 )&E(uc^3 )&E(dc^3)\\
+			E(u^3 d)&E(ud^3 )&E(udc^2 )&E(u^2d^2 )&E(u^2 dc )&E(ud^2c)\\
+			E(u^3 c )&E(ud^2 c)&E(uc^3)&E(u^2dc )&E(u^2c^2 )&E(udc^2)\\
+			E(u^2 dc)&E(d^3c )&E(dc^3 )&E(ud^2c )&E(udc^2 )&E(d^2c^2)
+			\end{bmatrix}$$
+$$=\begin{bmatrix}
+3\sigma^4&0.2274\sigma^4&2\sigma^4&-0.4318\sigma^4&2.25\sigma^4&-0.1881\sigma^4\\
+0.2274\sigma^4&3\sigma^4&2\sigma^4&-0.4318\sigma^4&-0.1881\sigma^4&2.25\sigma^4\\
+2\sigma^4&2\sigma^4&3\sigma^4&-0.4381\sigma^4&1.5\sigma^4&1.5\sigma^4\\
+-0.4318\sigma^4&-0.4318\sigma^4&-0.4381\sigma^4&0.2274\sigma^4&-0.1881\sigma^4&-0.1881\sigma^4\\
+2.25\sigma^4&-0.1881\sigma^4&1.5\sigma^4&-0.1881\sigma^4&2\sigma^4&-0.4381\sigma^4\\
+-0.1881\sigma^4&2.25\sigma^4&1.5\sigma^4&-0.1881\sigma^4&-0.4381\sigma^4&2\sigma^4 
+\end{bmatrix}$$
+
+%K VECTOR
+\item \textbf{$\vec{K}$ to calculate the family of estimators:}\\
+%\begin{multline}
+%$$\vec{K}_{GK}=
+%\begin{bmatrix}
+%E(u_{\sigma_1}^2)& E(d_{\sigma_1}^2)& E(c_{\sigma_1}^2)&E(ud_{\sigma_1})&E(uc_{\sigma_1})&E(dc_{\sigma_1})\\
+%E(u_{\sigma_2}^2)& E(d_{\sigma_2}^2)& E(c_{\sigma_2}^2)&E(ud_{\sigma_2})&E(uc_{\sigma_2})&E(dc_{\sigma_2})\\
+%E(u_{\sigma_3}^2)& E(d_{\sigma_3}^2)& E(c_{\sigma_3}^2)&E(ud_{\sigma_3})&E(uc_{\sigma_3})&E(dc_{\sigma_3})\\
+%E(u_{\sigma_4}^2)& E(d_{\sigma_4}^2)& E(c_{\sigma_4}^2)&E(ud_{\sigma_4})&E(uc_{\sigma_4})&E(dc_{\sigma_4})\\
+%E(u_{\sigma_5}^2)& E(d_{\sigma_5}^2)& E(c_{\sigma_5}^2)&E(ud_{\sigma_5})&E(uc_{\sigma_5})&E(dc_{\sigma_5})\\
+%E(u_{\sigma_6}^2)& E(d_{\sigma_6}^2)& E(c_{\sigma_6}^2)&E(ud_{\sigma_6})&E(uc_{\sigma_6})&E(dc_{\sigma_6})
+%\end{bmatrix}$$\\
+%$$=\begin{bmatrix}
+%\sigma_1{^2} &\sigma_1{^2}&\sigma_1{^2} & (1-2\log 2)\sigma_1{^2} &0.5\sigma_1{^2} &0.5\sigma_1{^2}\\
+%\sigma_2{^2} &\sigma_2{^2}&\sigma_2{^2} & (1-2\log 2)\sigma_2{^2} &0.5\sigma_2{^2} &0.5\sigma_2{^2}\\
+%\sigma_3{^2} &\sigma_3{^2}&\sigma_3{^2} & (1-2\log 2)\sigma_3{^2} &0.5\sigma_3{^2} &0.5\sigma_3{^2}\\
+%\sigma_4{^2} &\sigma_4{^2}&\sigma_4{^2} & (1-2\log 2)\sigma_4{^2} &0.5\sigma_4{^2} &0.5\sigma_4{^2}\\
+%\sigma_5{^2} &\sigma_5{^2}&\sigma_5{^2} & (1-2\log 2)\sigma_5{^2} &0.5\sigma_5{^2} &0.5\sigma_5{^2}\\
+%\sigma_6{^2} &\sigma_6{^2}&\sigma_6{^2} & (1-2\log 2)\sigma_6{^2} &0.5\sigma_6{^2} &0.5\sigma_6{^2}
+%\end{bmatrix}$$
+%\end{multline}
+$$\vec{K}_{GK}=
+\begin{bmatrix}
+E(u_{\sigma_1}^2)& E(d_{\sigma_1}^2)& E(c_{\sigma_1}^2)&E(ud_{\sigma_1})&E(uc_{\sigma_1})&E(dc_{\sigma_1})\\
+E(u_{\sigma_2}^2)& E(d_{\sigma_2}^2)& E(c_{\sigma_2}^2)&E(ud_{\sigma_2})&E(uc_{\sigma_2})&E(dc_{\sigma_2})\\
+E(u_{\sigma_3}^2)& E(d_{\sigma_3}^2)& E(c_{\sigma_3}^2)&E(ud_{\sigma_3})&E(uc_{\sigma_3})&E(dc_{\sigma_3})\\
+E(u_{\sigma_4}^2)& E(d_{\sigma_4}^2)& E(c_{\sigma_4}^2)&E(ud_{\sigma_4})&E(uc_{\sigma_4})&E(dc_{\sigma_4})\\
+E(u_{\sigma_5}^2)& E(d_{\sigma_5}^2)& E(c_{\sigma_5}^2)&E(ud_{\sigma_5})&E(uc_{\sigma_5})&E(dc_{\sigma_5})\\
+E(u_{\sigma_6}^2)& E(d_{\sigma_6}^2)& E(c_{\sigma_6}^2)&E(ud_{\sigma_6})&E(uc_{\sigma_6})&E(dc_{\sigma_6})
+\end{bmatrix}$$\\
+$$=\begin{bmatrix}
+\sigma_1{^2} &\sigma_1{^2}&\sigma_1{^2} & (1-2\log 2)\sigma_1{^2} &0.5\sigma_1{^2} &0.5\sigma_1{^2}\\
+\sigma_2{^2} &\sigma_2{^2}&\sigma_2{^2} & (1-2\log 2)\sigma_2{^2} &0.5\sigma_2{^2} &0.5\sigma_2{^2}\\
+\sigma_3{^2} &\sigma_3{^2}&\sigma_3{^2} & (1-2\log 2)\sigma_3{^2} &0.5\sigma_3{^2} &0.5\sigma_3{^2}\\
+\sigma_4{^2} &\sigma_4{^2}&\sigma_4{^2} & (1-2\log 2)\sigma_4{^2} &0.5\sigma_4{^2} &0.5\sigma_4{^2}\\
+\sigma_5{^2} &\sigma_5{^2}&\sigma_5{^2} & (1-2\log 2)\sigma_5{^2} &0.5\sigma_5{^2} &0.5\sigma_5{^2}\\
+\sigma_6{^2} &\sigma_6{^2}&\sigma_6{^2} & (1-2\log 2)\sigma_6{^2} &0.5\sigma_6{^2} &0.5\sigma_6{^2}
+\end{bmatrix}$$
+As observed previously the $\vec{K}$ matrix reduced to a row matrix on imposing condition. For this matrix the null space is calculated.
+
+%COMP CASE
+\item \textbf{Complete Case:}\\
+The family of estimators for volatility of security price modelled as Brownian motion without drift and jump.
+$$\begin{bmatrix}
+{a_{GK}}^{u^2}\\
+{a_{GK}}^{d^2}\\
+{a_{GK}}^{c^2}\\
+{a_{GK}}^{ud}\\
+{a_{GK}}^{uc}\\
+{a_{GK}}^{dc}
+\end{bmatrix}=
+\begin{bmatrix}
+1\\
+0\\
+0\\
+0\\
+0\\
+0
+\end{bmatrix}+\alpha_1
+\begin{bmatrix}
+-1\\
+1\\
+0\\
+0\\
+0\\
+0
+\end{bmatrix}+\alpha_2
+\begin{bmatrix}
+-1\\
+0\\
+1\\
+0\\
+0\\
+0
+\end{bmatrix}
++\alpha_3
+\begin{bmatrix}
+0.3862944\\
+0\\
+0\\
+1\\
+0\\
+0
+\end{bmatrix}
++\alpha_4
+\begin{bmatrix}
+-0.5\\
+0\\
+0\\
+0\\
+1\\
+0
+\end{bmatrix}
++\alpha_5
+\begin{bmatrix}
+-0.5\\
+0\\
+0\\
+0\\
+0\\
+1
+\end{bmatrix}
+ $$
+ The solution has the first vector as the particular solution and the rest of the 5 vectors are the basis vectors which comprise the null space for the estimator. Different values of $\alpha_1,\alpha_2, \alpha_3, \alpha_4 $ and $\alpha_5 $will give different estimators\\
+ 
+Garman and Klass:\quad $\alpha_{GK}: \alpha_1=0.5111\quad \alpha_2=-0.3831\quad \alpha_3=-0.9838 \quad \alpha_4=-0.0192\quad \alpha_5=-0.0192$ 
+
+%MV SOLUTION
+\item \textbf{Minimum Variance Solution:}\\
+Putting values of alpha in the complete case above gives the following solution:\\
+$${a_{GK}}^{u^2}=0.511119\quad{a_{GK}}^{d^2}=0.511119\quad{a_{GK}}^{c^2}=-0.383063\quad{a_{GK}}^{ud}=-0.983808$$
+$$\quad{a_{GK}}^{uc}=-0.019215\quad{a_{GK}}^{dc}=-0.019215$$
+Thus, we are able to reproduce the Garman \& Klass estimator.
+\end{enumerate}
+
+\subsubsection{Garman \& Klass practical estimator revisited}
+Garman \& Klass in their paper gave a more "practical estimator" given below. They termed it as more practical as it eliminated cross terms. This estimator has the same efficiency as their estimator with no drift and jump\footnote{Efficiency of $\approx 7.4$}.
+\begin{equation}
+\hat{\sigma}^2=0.5[u-d]^2-[2\log_e2-1]c^2
+\end{equation}
+Using our technique we tried to derive the estimator given in equation 16. Using the same moments as Garman \& Klass used we derive the estimator as above was reproduced.
+
+%MEILIJSON CASE
+\subsubsection{Meilijson Case}
+According to Meilijson the range data can be compressed further without loss of sufficiency. This compression of data yields an unbiased variance estimator with efficiency 7.73 with respect to close-close estimator\footnote{The Cramer-Rao lower bound on the variance of the unbiased estimator makes the efficiency of $\approx 8.5$ out of reach.}. This estimator's efficiency is greater than Garman \& Klass estimator efficiency of 7.4.
+\begin{enumerate}
+
+%UC
+\item \textbf{Expectation of the second order moments:}\\
+Meilijson followed the steps of Garman \& Klass for calculating the second-order moments. He quotes some of these moments from Garman \& Klass, and some he derives using the joint densities of (C, H) and (C, L). Thus we observe a change in the expectations of the moments given below. Meilijson, in his paper, assumes variance to be one and thus $E[c^2]=1$ followed from it\footnote{\citealp{meilijson2008}}.
+$$ E(u^2 )=1.75\sigma^2\quad  E(d^2 )=0.25\sigma^2\quad  E(c^2 )=\sigma^2\quad E(ud)=(1-2\log 2)\sigma{^2} \quad $$
+$$E(uc )=1.25\sigma^2\quad E(dc)=-0.25\sigma^2 $$
+
+%VAR COV MATRIX
+\item \textbf{Variance-Covariance Matrix $\sum_{M} $:}\\
+Using the fourth moments derived by Meilijson in his paper gives the below matrix\footnote{$E[C^4]=3$ is Gaussian kurtosis\cite{meilijson2008}}.
+ $$  \begin{bmatrix}
+			E(u^4 )&E(u^2 d^2 )&E(u^2 c^2)&E(u^3 d^2 )&E(u^3 c )&E(u^2 dc)\\
+			E(u^2 d^2 )&E(d^4 )&E(d^2 c^2 )&E(u d^3 )&E(u^2 d^2 )&E(u^3 d)\\
+			E(u^2 c^2 )&E(d^2 c^2)&E(c^4)&E(udc^2 )&E(uc^3 )&E(dc^3)\\
+			E(u^3 d)&E(ud^3 )&E(udc^2 )&E(u^2d^2 )&E(u^2 dc )&E(ud^2c)\\
+			E(u^3 c )&E(ud^2 c)&E(uc^3)&E(u^2dc )&E(u^2c^2 )&E(udc^2)\\
+			E(u^2 dc)&E(d^3c )&E(dc^3 )&E(ud^2c )&E(udc^2 )&E(d^2c^2)
+			\end{bmatrix}$$
+$$=\begin{bmatrix}
+5.8125\sigma^4&0.22741\sigma^4&3.875\sigma^4&-0.7159\sigma^4&4.59375\sigma^4&-0.53376\sigma^4\\0.22741\sigma^4&0.1875\sigma^4&0.125\sigma^4&-0.1478\sigma^4&0.15758\sigma^4&-0.09375\sigma^4\\3.875\sigma^4&0.125\sigma^4&3\sigma^4&-0.43808\sigma^4&3.375\sigma^4&-0.375\sigma^4\\-0.7159\sigma^4&-0.1478\sigma^4&-0.43808\sigma^4&0.22741\sigma^4&-0.53376\sigma^4&0.15758\sigma^4\\4.59375\sigma^4&0.15758\sigma^4&3.375\sigma^4&-0.53376\sigma^4&3.875\sigma^4&-0.43808\sigma^4\\-0.53376\sigma^4&-0.09375\sigma^4&-0.375\sigma^4&0.15758\sigma^4&-0.43808\sigma^4&0.125\sigma^4 
+\end{bmatrix}$$
+
+%K VECTOR
+\item \textbf{$\vec{K}$ to calculate the family of estimators:}\\
+\begin{multline}
+$$\vec{K}_{M}=
+\begin{bmatrix}
+E(u_{\sigma_1}^2)& E(d_{\sigma_1}^2)& E(c_{\sigma_1}^2)&E(ud_{\sigma_1})&E(uc_{\sigma_1})&E(dc_{\sigma_1})\\
+E(u_{\sigma_2}^2)& E(d_{\sigma_2}^2)& E(c_{\sigma_2}^2)&E(ud_{\sigma_2})&E(uc_{\sigma_2})&E(dc_{\sigma_2})\\
+E(u_{\sigma_3}^2)& E(d_{\sigma_3}^2)& E(c_{\sigma_3}^2)&E(ud_{\sigma_3})&E(uc_{\sigma_3})&E(dc_{\sigma_3})\\
+E(u_{\sigma_4}^2)& E(d_{\sigma_4}^2)& E(c_{\sigma_4}^2)&E(ud_{\sigma_4})&E(uc_{\sigma_4})&E(dc_{\sigma_4})\\
+E(u_{\sigma_5}^2)& E(d_{\sigma_5}^2)& E(c_{\sigma_5}^2)&E(ud_{\sigma_5})&E(uc_{\sigma_5})&E(dc_{\sigma_5})\\
+E(u_{\sigma_6}^2)& E(d_{\sigma_6}^2)& E(c_{\sigma_6}^2)&E(ud_{\sigma_6})&E(uc_{\sigma_6})&E(dc_{\sigma_6})
+\end{bmatrix}$$\\
+$$=\begin{bmatrix}
+1.75\sigma_1{^2} &0.25\sigma_1{^2}&\sigma_1{^2} & (1-2\log 2)\sigma_1{^2} &1.25\sigma_1{^2} &-0.25\sigma_1{^2}\\
+1.75\sigma_2{^2} &0.25\sigma_2{^2}&\sigma_2{^2} & (1-2\log 2)\sigma_2{^2} &1.25\sigma_2{^2} &-0.25\sigma_2{^2}\\
+1.75\sigma_3{^2} &0.25\sigma_3{^2}&\sigma_3{^2} & (1-2\log 2)\sigma_3{^2} &1.25\sigma_3{^2} &-0.25\sigma_3{^2}\\
+1.75\sigma_4{^2} &0.25\sigma_4{^2}&\sigma_4{^2} & (1-2\log 2)\sigma_4{^2} &1.25\sigma_4{^2} &-0.25\sigma_4{^2}\\
+1.75\sigma_5{^2} &0.25\sigma_5{^2}&\sigma_5{^2} & (1-2\log 2)\sigma_5{^2} &1.25\sigma_5{^2} &-0.25\sigma_5{^2}\\
+1.75\sigma_6{^2} &0.25\sigma_6{^2}&\sigma_6{^2} & (1-2\log 2)\sigma_6{^2} &1.25\sigma_6{^2} &-0.25\sigma_6{^2}
+\end{bmatrix}$$
+\end{multline}
+
+%COMP CASE
+\item \textbf{Complete Case:}\\
+The family of estimators for volatility of security price modelled as Brownian motion without drift
+$$\begin{bmatrix}
+{a_{M}}^{u^2}\\
+{a_{M}}^{d^2}\\
+{a_{M}}^{c^2}\\
+{a_{M}}^{ud}\\
+{a_{M}}^{uc}\\
+{a_{M}}^{dc}
+\end{bmatrix}=
+\begin{bmatrix}
+0.5\\
+0.5\\
+0\\
+0\\
+0\\
+0
+\end{bmatrix}+\alpha_1
+\begin{bmatrix}
+-0.14\\
+1\\
+0\\
+0\\
+0\\
+0
+\end{bmatrix}+\alpha_2
+\begin{bmatrix}
+-0.57\\
+0\\
+1\\
+0\\
+0\\
+0
+\end{bmatrix}
++\alpha_3
+\begin{bmatrix}
+0.22\\
+0\\
+0\\
+1\\
+0\\
+0
+\end{bmatrix}
++\alpha_4
+\begin{bmatrix}
+-0.71\\
+0\\
+0\\
+0\\
+1\\
+0
+\end{bmatrix}
++\alpha_5
+\begin{bmatrix}
+0.14\\
+0\\
+0\\
+0\\
+0\\
+1
+\end{bmatrix}
+ $$
+ The solution has the first vector as the particular solution and the rest of the 5 vectors are the basis vectors which comprise the null space for the estimator. 
+ Different values of $\alpha_1,\alpha_2, \alpha_3, \alpha_4 $ and $\alpha_5 $will give different estimators\\
+ 
+Meilijson:\quad $\alpha_{M}: \alpha_1=0.0453\quad \alpha_2=-0.0219\quad \alpha_3=-1.4707 \quad \alpha_4=-0.3662\quad \alpha_5=-0.7374$ 
+
+%MV SOLUTION
+\item \textbf{Minimum Variance Solution:}\\
+Putting values of alpha in the complete case above gives the following solution:\\
+$${a_{M}}^{u^2}=0.549\quad{a_{M}}^{d^2}=0.545\quad{a_{M}}^{c^2}=-0.0214\quad{a_{M}}^{ud}=-1.470$$
+$$\quad{a_{M}}^{uc}=-0.367\quad{a_{M}}^{dc}=0.736$$
+We are able to derive the estimator using the coefficients given above. Meilijson doesn't explicitly mention this estimator in his paper. This estimator can only be used when the raw dataset of OHLC\footnote{Open, High, Low and Close price} is manipulated\footnote{Consider the triple $S=(C, H, L)$, where $C=|c|, (H, L)=(h,l)$ if $c>0,$ while $(H, L)=-(l, h)$ if $c<0$.}. Table 2 shows that by compressing range data, without loss of sufficiency, yields an estimator that is more efficient than Garman \& Klass estimator. 
+
+\begin{table}[ht]
+\small
+\caption{Variance and efficiency of Garman \& Klass and Meilijson estimator}
+\label{table:GK AND MJ}
+\centering
+\begin{tabular}{LS@{}SLSLS}
+\midrule
+\hline \\
+\multicolumn{1}{@{\hspace{0.5em}}l}{} & \mc{Classical Estimator} & \mc{GK* Estimator} && \mc{Meilijson Estimator (NT)}   \\[1ex]
+\midrule
+Variance&1.990411696&0.265545496&&0.256325281\\[1ex]
+Efficiency&1&7.495558118&&7.765179013\\
+\midrule\\[-2.5ex]
+\multicolumn{3}{l}{*Garman \& Klass}\\
+\end{tabular}
+\end{table}
+\end{enumerate}
+
+
+%PARKINSON CASE USING MEILIJISON TECHNIQUE
+\subsubsection{Using Meilijson Technique on Parkinson estimator}
+We take the moments as derived by Meilijson in his paper and try to improve the an estimator that uses only the high and low prices\footnote{Parkinson used only the high and low prices of an asset, due to which we call this as Parkinson estimator.}. Hence, we can further improve the efficiency of the estimator that we had derived earlier in case of Parkinson using the Garman \& Klass moments.
+
+\begin{enumerate}
+%UC
+\item \textbf{Expectations of the moments}\\
+We use the moments derived by Meilijson.
+$$ E(u^2 )=1.75\sigma^2\quad  E(d^2 )=0.25\sigma^2\quad  E(ud)=(1-2\log 2)\sigma{^2}  $$
+%VAR COV MATRIX
+\item \textbf{Variance-Covariance Matrix $\sum_{MP} $:}\\
+The resulting variance covariance matrix using the fourth order moments is given below.
+	$$  \begin{bmatrix}
+			E(u^4 )&E(u^2 d^2 )&E(u^3 d)\\
+			E(u^2 d^2 )&E(d^4 )&E({ud}^3 )\\
+			E(u^3 d)&E({ud}^3 )&E(u^2 d^2 ) 
+			\end{bmatrix}=
+			\begin{bmatrix}
+			5.8125\sigma^4&0.22741\sigma^4&-0.7159\sigma^4\\
+			0.22741\sigma^4&0.1875\sigma^4&-0.1478\sigma^4\\
+			-0.7159\sigma^4&-0.1478\sigma^4&0.22741\sigma^4 
+			\end{bmatrix}
+$$
+%K MATRIX
+\item\textbf{ $\vec{K}$ to calculate the family of estimators:}\\
+$$\vec{K}_{MP}=
+\begin{bmatrix}
+E(u_{\sigma_1}^2)& E(d_{\sigma_1}^2)&E(ud_{\sigma_1})\\
+E(u_{\sigma_2}^2)& E(d_{\sigma_2}^2)&E(ud_{\sigma_2})\\
+E(u_{\sigma_3}^2)& E(d_{\sigma_3}^2)&E(ud_{\sigma_3})\\
+E(u_{\sigma_4}^2)& E(d_{\sigma_4}^2)&E(ud_{\sigma_4})\\
+E(u_{\sigma_5}^2)& E(d_{\sigma_5}^2)&E(ud_{\sigma_5})\\
+E(u_{\sigma_6}^2)& E(d_{\sigma_6}^2)&E(ud_{\sigma_6})\\
+\end{bmatrix}
+=\begin{bmatrix}
+1.75\sigma_1{^2} &0.25\sigma_1{^2} & (1-2\log 2)\sigma_1{^2} \\
+1.75\sigma_2{^2} &0.25\sigma_2{^2} & (1-2\log 2)\sigma_2{^2} \\
+1.75\sigma_3{^2} &0.25\sigma_3{^2} & (1-2\log 2)\sigma_3{^2} \\
+1.75\sigma_4{^2} &0.25\sigma_4{^2} & (1-2\log 2)\sigma_4{^2} \\
+1.75\sigma_5{^2} &0.25\sigma_5{^2} & (1-2\log 2)\sigma_5{^2} \\
+1.75\sigma_6{^2} &0.25\sigma_6{^2} & (1-2\log 2)\sigma_6{^2} \\
+\end{bmatrix}$$
+%COMP CASE
+\item \textbf{Complete Case:}\\
+The particular solution is similar what was used in Melijson case. Nevertheless, no changes in the final coefficients result on changing the particular solution.
+$$\begin{bmatrix}
+{a_{MP}}^{u^2}\\
+{a_{MP}}^{d^2}\\
+{a_{MP}}^{ud}\\
+\end{bmatrix}=
+\begin{bmatrix}
+0.5\\
+0.5\\
+0\end{bmatrix}+\alpha_1
+\begin{bmatrix}
+-0.1428\\
+1\\
+0\end{bmatrix}+\alpha_2
+\begin{bmatrix}
+0.221\\
+0\\
+1\end{bmatrix}
+$$
+Meilijison/Parkinson:\quad $\alpha_{MP}: \alpha_1=0.109354668\quad \alpha_2=-1.1062027834$ 
+%MV SOLUTION
+\item \textbf{Minimum Variance Solution:}\\
+Putting values of alpha in the complete case above gives the following solution:\\
+$${a_{MP}}^{u^2}=0.2401951\quad{a_{MP}}^{d^2}=0.60935466\quad{a_{MP}}^{ud}=-1.1062027834$$
+Thus, from table 3 we observe that the efficiency using the new technique has resulted in the best class of estimator when using only high and low prices.
+\begin{table}[ht]
+\centering
+\caption{Variance and efficiency of Classical and Parkinson estimator}
+\begin{tabular}{ccccc}
+\hline\hline\\[0.01ex]
+&Classical&Parkinson &Parkinson&Meilijson/Parkinson\\
+&estimator&estimator&estimator (NT)&estimator (NT)
+\\\hline\\
+Variance&1.990411696&0.402347017
+&0.344197509&0.330487424
+\\[1.5ex]
+Efficiency&1&4.947002489&5.782760315&6.022654875
+\\
+\hline
+\end{tabular}
+\end{table}
+
+\end{enumerate}
+In the class of estimator, using OHLC data, without drift and jump Meilijson estimator has the highest efficiency.
+
+
+\subsection{Brownian Motion with zero drift and positive jump}
+\subsubsection{Garman and Klass composite estimator}
+\begin{enumerate}
+\item \textbf{The estimator}\\
+Instead of taking just the quadratic terms and cross terms, we include the jump factor in the estimator. This is done to reproduce to Garman \& Klass estimator with the jump factor.
+$$\sigma^{2}= {a_{GK}}^{u^2}*\frac{u^2}{1-f}+{a_{GK}}^{d^2}*\frac{d^2}{1-f}+{a_{GK}}^{c_{1}^2}*\frac{c_{1}^2}{1-f}$$ $$+ {a_{GK}}^{ud}*\frac{ud}{1-f}+{a_{GK}}^{uc_{1}}*\frac{uc_{1}}{1-f}+{a_{GK}}^{dc_{1}}*\frac{dc_{1}}{1-f}$$ $$+ {a_{GK}}^{c_{0}^2}*\frac{c_{0}^2}{f}$$
+
+Here $c_1$ is the present day close and $c_0$ is the previous day close. We have taken the previous day close due to two reasons:\begin{itemize}
+\item the main reason is that the previous day close will be independent of the current day quadratic and cross terms. So it will be easy to evaluate  covariance variancev matrix.
+\item As we are normalizing with respect to opening then it makes sense to keep the previous day close as the variable in the equation. We also normalize this previous day close with respect to today's opening price.
+
+\end{itemize}
+\item \textbf{Expectation of the second order moments:}\\
+The expected values of the quadratic and cross terms will be independent of f.
+$$ E(\frac{u^2}{1-f})=\sigma^2\quad  E(\frac{d^2}{1-f} )=\sigma^2\quad  E(\frac{c_{1}^2}{1-f} )=\sigma^2\quad $$ $$E(\frac{ud}{1-f})=(1-2\log 2)\sigma{^2} \quad E(\frac{uc}{1-f} )=0.5\sigma^2\quad E(\frac{dc_1}{1-f})=0.5\sigma^2\quad E(\frac{c_{0}^2}{f})=\sigma^2 $$
+
+
+\item \textbf{Variance-Covariance Matrix $\sum_{GK} $:}\\
+To calculate the matrix we assume that the previous day close is independent of present day prices (both quadratic and cross).
+ $$  \begin{bmatrix}
+
+\vspace{1em} 
+
+E[\frac{u^4}{(1-f)^2}]&E[\frac{u^2 d^2}{(1-f)^2} ]&E[\frac{u^2 c_1^2}{(1-f)^2}]&E[\frac{u^3 d^2}{(1-f)^2} ]&E[\frac{u^3 c_1}{(1-f)^2}]&E[\frac{u^2 dc_1}{(1-f)^2}] &E[\frac{u^2}{1-f}]*E[\frac{c_0^2}{f}]\\
+
+\vspace{1em}
+			E[\frac{u^2 d^2}{(1-f)^2}]&E[\frac{d^4}{(1-f)^2} ]&E[\frac{d^2 c_1^2}{(1-f)^2}]&E[\frac{u d^3}{(1-f)^2}]&E[\frac{u^2 d^2}{(1-f)^2}]&E[\frac{u^3 d}{{(1-f)}^2}] &E[\frac{d^2}{1-f}]*E[\frac{c_0^2}{f}]\\
+
+\vspace{1em}
+			E[\frac{u^2 c_1^2}{(1-f)^2}]&E[\frac{d^2 c_1^2}{(1-f)^2}]&E[\frac{c_1^4}{(1-f)^2}]&E[\frac{udc_1^2}{(1-f)^2}] &E[\frac{uc_1^3}{(1-f)^2}]&E[\frac{dc_1^3}{(1-f)^2}]&E[\frac{c_1^2}{1-f}]*E[\frac{c_0^2}{f}]\\
+\vspace{1em}			
+			
+			E[\frac{u^3 d}{(1-f)^2}]&E[\frac{ud^3}{(1-f)^2}] &E[\frac{udc_1^2}{(1-f)^2}] &E[\frac{u^2d^2}{(1-f)^2}] &E[\frac{u^2 dc_1}{(1-f)^2}] &E[\frac{ud^2c_1}{(1-f)^2}]
+&E[\frac{ud}{1-f}]*E[\frac{c_0^2}{f}]\\
+\vspace{1em}			
+			E[\frac{u^3 c_1}{(1-f)^2}]&E[\frac{ud^2 c_1}{(1-f)^2}]&E[\frac{uc_1^3}{(1-f)^2}]&E[\frac{u^2dc_1}{(1-f)^2}]&E[\frac{u^2c_1^2}{(1-f)^2}]&E[\frac{udc_1^2}{(1-f)^2}]
+&E[\frac{uc_1}{1-f}]*E[\frac{c_0^2}{f}]\\
+\vspace{1em}			
+			E[\frac{u^2 dc_1}{(1-f)^2}]&E[\frac{d^3c_1}{(1-f)^2}]&E[\frac{dc_1^3}{(1-f)^2}] &E[\frac{ud^2c_1}{(1-f)^2}]&E[\frac{udc_1^2}{(1-f)^2}]&E[\frac{d^2c_1^2}{(1-f)^2}]
+&E[\frac{dc_1}{1-f}]*E[\frac{c_0^2}{f}]\\
+\vspace{1em}
+			.&.&.&.&.&.&E[\frac{c_0^4}{f^2}]
+			\end{bmatrix}$$
+$$=\begin{bmatrix}
+3\sigma^4&0.2274\sigma^4&2\sigma^4&-0.4318\sigma^4&2.25\sigma^4&-0.1881\sigma^4&\sigma^4\\
+0.2274\sigma^4&3\sigma^4&2\sigma^4&-0.4318\sigma^4&-0.1881\sigma^4&2.25\sigma^4&\sigma^4\\
+2\sigma^4&2\sigma^4&3\sigma^4&-0.4381\sigma^4&1.5\sigma^4&1.5\sigma^4&\sigma^4\\
+-0.4318\sigma^4&-0.4318\sigma^4&-0.4381\sigma^4&0.2274\sigma^4&-0.1881\sigma^4&-0.1881\sigma^4&(1-2\log2)\sigma^4\\
+2.25\sigma^4&-0.1881\sigma^4&1.5\sigma^4&-0.1881\sigma^4&2\sigma^4&-0.4381\sigma^4&0.5\sigma^4\\
+-0.1881\sigma^4&2.25\sigma^4&1.5\sigma^4&-0.1881\sigma^4&-0.4381\sigma^4&2\sigma^4&0.5\sigma^4\\
+\sigma^4&\sigma^4&\sigma^4 &(1-2\log2)\sigma^4&0.5\sigma^4&0.5\sigma^4&3\sigma^4
+\end{bmatrix}$$
+\\
+%K VECTOR
+\item \textbf{$\vec{K}$ to calculate the family of estimators:}\\
+Our K vector is independent of f as the expected values are independent of f.
+
+$$\vec{K}_{GK}=
+\begin{bmatrix}
+\sigma_1{^2} &\hdots &(1-2\log 2)\sigma_1{^2}
+&\hdots &0.5\sigma_1{^2}&\hdots &\sigma_1{^2}\\
+\sigma_2{^2} &\hdots &(1-2\log 2)\sigma_2{^2} 
+&\hdots &0.5\sigma_2{^2}&\hdots &\sigma_2{^2}\\
+\vdots &\hdots &\vdots &\hdots &\vdots &\hdots\\
+\vdots &\hdots &\vdots &\hdots &\vdots &\hdots
+\end{bmatrix}$$
+
+
+
+%COMP CASE
+\item \textbf{Complete Case:}\\
+The family of estimators for volatility of security price modelled as Brownian motion without drift
+$$\begin{bmatrix}
+{a_{GK}}^{u^2}\\
+{a_{GK}}^{d^2}\\
+{a_{GK}}^{c_1^2}\\
+{a_{GK}}^{ud}\\
+{a_{GK}}^{uc_1}\\
+{a_{GK}}^{dc_1}\\
+{a_{GK}}^{c_0^2}
+\end{bmatrix}=
+\begin{bmatrix}
+1\\
+0\\
+0\\
+0\\
+0\\
+0\\
+0
+\end{bmatrix}+\alpha_1
+\begin{bmatrix}
+-1\\
+1\\
+0\\
+0\\
+0\\
+0\\
+0
+\end{bmatrix}+\alpha_2
+\begin{bmatrix}
+-1\\
+0\\
+1\\
+0\\
+0\\
+0\\
+0
+\end{bmatrix}
++\alpha_3
+\begin{bmatrix}
+0.39\\
+0\\
+0\\
+1\\
+0\\
+0\\
+0
+\end{bmatrix}
++\alpha_4
+\begin{bmatrix}
+-0.5\\
+0\\
+0\\
+0\\
+1\\
+0\\
+0
+\end{bmatrix}
++\alpha_5
+\begin{bmatrix}
+-0.5\\
+0\\
+0\\
+0\\
+0\\
+1\\
+0
+\end{bmatrix}
++\alpha_6
+\begin{bmatrix}
+-1\\
+0\\
+0\\
+0\\
+0\\
+0\\
+1
+\end{bmatrix}
+ $$
+Garman and Klass:\quad $$\alpha_{GK}: \alpha_1=0.45059\quad \alpha_2=-0.33770\quad \alpha_3=-0.86730 \quad\\$$ $$
+ \alpha_4=-0.01693\quad \alpha_5=-0.01693 \quad \alpha_6=0.1184$$ 
+ 
+ %MV SOLUTION
+\item \textbf{Minimum Variance Solution:}\\
+Putting values of alpha in the complete case above gives the following solution:\\
+$${a_{GK}}^{u^2}=0.45059\quad{a_{GK}}^{d^2}=0.45059\quad{a_{GK}}^{c_1^2}= -0.3377\quad{a_{GK}}^{ud}=-0.8673$$
+$$\quad{a_{GK}}^{uc_1}=-0.01693\quad{a_{GK}}^{dc_1}=-0.01693\quad{a_{GK}}^{c_0^2}=0.1184$$
+
+\item \textbf{Final Estimator}\\
+$$\sigma^{2}= \frac{1}{1-f}(0.45059{u^2}+0.45059d^2-0.3377c_{1}^2-0.8673ud-0.01693uc_{1}-0.01693dc_{1})+ 0.1184\frac{c_{0}^2}{f}$$
+Thus, we are able to reproduce the Garman \& Klass composite estimator which is given below. This composite estimator has an efficiency of $\approx 8.4.$
+$$\hat{\sigma}^2=a\frac{(O_1-C_0)^2}{f}+(1-a)\frac{\hat{\sigma}_*^2}{(1-f)}
+$$
+where, $a=0.12$ and $\hat{\sigma}_*^2$ is the best analytic scale invariant estimator\footnote{This estimator is the Garman \& Klass estimator without jump and drift which has been derived earlier using the new technique. In the Garman \& Klass paper this estimator is in the following form $\hat{\sigma}_*^2 = 0.511(u-d)^2-0.019[c(u+d)-2ud]-0.383c^2$}. 
+\end{enumerate}
+
+\subsubsection{Meilijson estimator}
+\begin{enumerate}
+\item \textbf{The estimator}\\
+Instead of taking just the quadratic terms and cross terms, we include the jump factor in the estimator. This is done to reproduce to Meilijson estimator with the jump factor.
+$$\sigma^{2}= {a_{M}}^{u^2}*\frac{u^2}{1-f}+{a_{M}}^{d^2}*\frac{d^2}{1-f}+{a_{M}}^{c_{1}^2}*\frac{c_{1}^2}{1-f}$$ $$+ {a_{M}}^{ud}*\frac{ud}{1-f}+{a_{M}}^{uc_{1}}*\frac{uc_{1}}{1-f}+{a_{M}}^{dc_{1}}*\frac{dc_{1}}{1-f}$$ $$+ {a_{M}}^{c_{0}^2}*\frac{c_{0}^2}{f}$$
+
+Here $c_1$ is the present day close and $c_0$ is the previous day close. We have taken the previous day close due to two reasons:\begin{itemize}
+\item the main reason is that the previous day close will be independent of the current day quadratic and cross terms. So it will be easy to evaluate  covariance variancev matrix.
+\item As we are normalizing with respect to opening then it makes sense to keep the previous day close as the variable in the equation. We also normalize this previous day close with respect to today's opening price.
+
+\end{itemize}
+\item \textbf{Expectation of the second order moments:}\\
+The expected values of the quadratic and cross terms will be independent of f.
+$$ E(\frac{u^2}{1-f})=1.75\sigma^2\quad  E(\frac{d^2}{1-f} )=0.25\sigma^2\quad  E(\frac{c_{1}^2}{1-f} )=\sigma^2\quad $$ $$E(\frac{ud}{1-f})=(1-2\log 2)\sigma{^2} \quad E(\frac{uc}{1-f} )=1.25\sigma^2\quad E(\frac{dc_1}{1-f})=-0.25\sigma^2\quad E(\frac{c_{0}^2}{f})=\sigma^2 $$
+
+
+\item \textbf{Variance-Covariance Matrix $\sum_{M} $:}\\
+To calculate the matrix we assume that the previous day close is independent of present day prices (both quadratic and cross).\\
+ $$  \begin{bmatrix}
+
+\vspace{1em} 
+
+E[\frac{u^4}{(1-f)^2}]&E[\frac{u^2 d^2}{(1-f)^2} ]&E[\frac{u^2 c_1^2}{(1-f)^2}]&E[\frac{u^3 d^2}{(1-f)^2} ]&E[\frac{u^3 c_1}{(1-f)^2}]&E[\frac{u^2 dc_1}{(1-f)^2}] &E[\frac{u^2}{1-f}]*E[\frac{c_0^2}{f}]\\
+
+\vspace{1em}
+			E[\frac{u^2 d^2}{(1-f)^2}]&E[\frac{d^4}{(1-f)^2} ]&E[\frac{d^2 c_1^2}{(1-f)^2}]&E[\frac{u d^3}{(1-f)^2}]&E[\frac{u^2 d^2}{(1-f)^2}]&E[\frac{u^3 d}{{(1-f)}^2}] &E[\frac{d^2}{1-f}]*E[\frac{c_0^2}{f}]\\
+
+\vspace{1em}
+			E[\frac{u^2 c_1^2}{(1-f)^2}]&E[\frac{d^2 c_1^2}{(1-f)^2}]&E[\frac{c_1^4}{(1-f)^2}]&E[\frac{udc_1^2}{(1-f)^2}] &E[\frac{uc_1^3}{(1-f)^2}]&E[\frac{dc_1^3}{(1-f)^2}]&E[\frac{c_1^2}{1-f}]*E[\frac{c_0^2}{f}]\\
+\vspace{1em}			
+			
+			E[\frac{u^3 d}{(1-f)^2}]&E[\frac{ud^3}{(1-f)^2}] &E[\frac{udc_1^2}{(1-f)^2}] &E[\frac{u^2d^2}{(1-f)^2}] &E[\frac{u^2 dc_1}{(1-f)^2}] &E[\frac{ud^2c_1}{(1-f)^2}]
+&E[\frac{ud}{1-f}]*E[\frac{c_0^2}{f}]\\
+\vspace{1em}			
+			E[\frac{u^3 c_1}{(1-f)^2}]&E[\frac{ud^2 c_1}{(1-f)^2}]&E[\frac{uc_1^3}{(1-f)^2}]&E[\frac{u^2dc_1}{(1-f)^2}]&E[\frac{u^2c_1^2}{(1-f)^2}]&E[\frac{udc_1^2}{(1-f)^2}]
+&E[\frac{uc_1}{1-f}]*E[\frac{c_0^2}{f}]\\
+\vspace{1em}			
+			E[\frac{u^2 dc_1}{(1-f)^2}]&E[\frac{d^3c_1}{(1-f)^2}]&E[\frac{dc_1^3}{(1-f)^2}] &E[\frac{ud^2c_1}{(1-f)^2}]&E[\frac{udc_1^2}{(1-f)^2}]&E[\frac{d^2c_1^2}{(1-f)^2}]
+&E[\frac{dc_1}{1-f}]*E[\frac{c_0^2}{f}]\\
+\vspace{1em}
+			.&.&.&.&.&.&E[\frac{c_0^4}{f^2}]
+			\end{bmatrix}$$
+
+$$=\begin{bmatrix}
+5.8125\sigma^4&0.22741\sigma^4&3.875\sigma^4&-0.7159\sigma^4&
+4.59375\sigma^4&-0.53376\sigma^4&1.75\sigma^4\\0.22741\sigma^4&0.1875\sigma^4&0.125\sigma^4&-0.1478\sigma^4&
+0.15758\sigma^4&-0.09375\sigma^4&0.25\sigma^4\\3.875\sigma^4&0.125\sigma^4&3\sigma^4&-0.43808\sigma^4&
+3.375\sigma^4&-0.375\sigma^4&\sigma^4\\-0.7159\sigma^4&-0.1478\sigma^4&-0.43808\sigma^4&0.22741\sigma^4&
+-0.53376\sigma^4&0.15758\sigma^4&-0.38629\sigma^4\\4.59375\sigma^4&0.15758\sigma^4&3.375\sigma^4&-0.53376\sigma^4&
+3.875\sigma^4&-0.43808\sigma^4&1.25\sigma^4\\-0.53376\sigma^4&-0.09375\sigma^4&-0.375\sigma^4&0.15758\sigma^4&
+-0.43808\sigma^4&0.125\sigma^4&-0.25\sigma^4\\1.75\sigma^4&0.25\sigma^4&\sigma^4&-0.38629\sigma^4&
+1.25\sigma^4&0.25\sigma^4&3\sigma^4
+ 
+\end{bmatrix}$$
+\\
+%K VECTOR
+\item \textbf{$\vec{K}$ to calculate the family of estimators:}\\
+Our K vector is independent of f as the expected values are independent of f.
+
+$$\vec{K}_{M}=
+\begin{bmatrix}
+1.75\sigma_1{^2} &\hdots &\sigma_1{^2}
+&\hdots &1.25\sigma_1{^2}&\hdots &\sigma_1{^2}\\
+1.75\sigma_2{^2} &\hdots &\sigma_2{^2} 
+&\hdots &1.25\sigma_2{^2}&\hdots &\sigma_2{^2}\\
+\vdots &\hdots &\vdots &\hdots &\vdots &\hdots\\
+\vdots &\hdots &\vdots &\hdots &\vdots &\hdots
+\end{bmatrix}$$
+
+
+
+%COMP CASE
+\item \textbf{Complete Case:}\\
+The family of estimators for volatility of security price modelled as Brownian motion without drift
+$$\begin{bmatrix}
+{a_{M}}^{u^2}\\
+{a_{M}}^{d^2}\\
+{a_{M}}^{c_1^2}\\
+{a_{M}}^{ud}\\
+{a_{M}}^{uc_1}\\
+{a_{M}}^{dc_1}\\
+{a_{M}}^{c_0^2}
+\end{bmatrix}=
+\begin{bmatrix}
+0.5\\
+0.5\\
+0\\
+0\\
+0\\
+0\\
+0
+\end{bmatrix}+\alpha_1
+\begin{bmatrix}
+-0.14\\
+1\\
+0\\
+0\\
+0\\
+0\\
+0
+\end{bmatrix}+\alpha_2
+\begin{bmatrix}
+-0.57\\
+0\\
+1\\
+0\\
+0\\
+0\\
+0
+\end{bmatrix}
++\alpha_3
+\begin{bmatrix}
+-0.22\\
+0\\
+0\\
+1\\
+0\\
+0\\
+0
+\end{bmatrix}
++\alpha_4
+\begin{bmatrix}
+-0.71\\
+0\\
+0\\
+0\\
+1\\
+0\\
+0
+\end{bmatrix}
++\alpha_5
+\begin{bmatrix}
+0.14\\
+0\\
+0\\
+0\\
+0\\
+1\\
+0
+\end{bmatrix}
++\alpha_6
+\begin{bmatrix}
+-0.57\\
+0\\
+0\\
+0\\
+0\\
+0\\
+1
+\end{bmatrix}
+ $$
+Meilijson:\quad $$\alpha_{M}: \alpha_1=-0.017077\quad \alpha_2=-0.018984\quad \alpha_3=-1.301307 \quad\\$$ $$
+ \alpha_4=-0.324905\quad \alpha_5=0.651776 \quad \alpha_6=0.114649$$ 
+ 
+ %MV SOLUTION
+\item \textbf{Minimum Variance Solution:}\\
+Putting values of alpha in the complete case above gives the following solution:\\
+$${a_{M}}^{u^2}=0.48571\quad{a_{M}}^{d^2}=0.48292\quad{a_{M}}^{c_1^2}= -0.01898\quad{a_{M}}^{ud}=-1.30130$$
+$$\quad{a_{M}}^{uc_1}=-0.32490\quad{a_{M}}^{dc_1}=0.65177\quad{a_{M}}^{c_0^2}=0.11464              $$
+
+\item \textbf{Final Estimator}\\
+$$\sigma^{2}= \frac{1}{1-f}(0.48571{u^2}+0.48292d^2-0.01898c_{1}^2-1.3013ud-0.01693uc_{1}0.6517dc_{1})+ 0.1146\frac{c_{0}^2}{f}$$
+\begin{table}[ht]
+\small
+\caption{Variance and efficiency of Garman \& Klass and Meilijson Jump estimator}
+\label{table:GK AND MJ JUMP}
+\centering
+\begin{tabular}{LS@{}SLSLS}
+\midrule
+\hline \\
+\multicolumn{1}{@{\hspace{0.5em}}l}{} & \mc{Classical Estimator} & \mc{GK* Jump Estimator} && \mc{Meilijson Jump Estimator }   \\[1ex]
+\midrule
+Variance&1.97797&0.23633&&0.22716\\[1ex]
+Efficiency&1&8.36946&&8.70735\\
+\midrule\\[-2.5ex]
+\multicolumn{3}{l}{*Garman \& Klass}\\
+\end{tabular}
+\end{table}
+
+In Table 4 we show the variance and efficiency resulting from a simulated data\footnote{Where $\sigma^2=1.0$ and $f=0.3$ }. Meilijson estimator is observed to be a better class of estimator than Garman- Klass. Nonetheless, the efficiency of the estimators is seen to improve when new information is added.
+\end{enumerate}
+
+
+\subsection{Brownian Motion with drift and no jump}
+\subsubsection{Rogers and Satchell Case}
+As discussed earlier, the expectation of quadratic extreme values is a complex function when drift is introduced. Though, by analysing the expectations through graphical representation, it is easy to infer that the pattern followed by these expectations can be exploited to form groups whose expectations are drift independent. 
+
+There are three patterns which can be noted.
+\begin{enumerate}
+\item The distance between $u^2$ and $uc$ is $\sigma^2/2$ irrespective of the drift value.
+\item The distance between $d^2$ and $dc$ is $sigma^2/2$ irrespective of the drift value.
+\item The distance between $(u^2+ d^2)$ and $c^2$ is $\sigma^2$  irrespective of the drift value.
+\end{enumerate}
+Let us out look at the solutions in case of Roger and Satchell.
+%UC
+\begin{enumerate}
+\item \textbf{Expectation of the second order moments:}\\
+The function of the expected values of quadratic extreme terms becomes non linear and complex when drift is non zero. Rogers and Satchell grouped the terms in such a way that the expectation of the group is independent of the drift.
+$$ E(u^2-uc )=0.5\sigma^2\quad  E(d^2-dc)=0.5\sigma^2\quad$$
+
+%VAR COV MATRIX
+\item \textbf{Variance-Covariance Matrix $\sum_{RS} $:}\\
+The cross moments are not independent of the drift. Thus, we have put the values of cross moments corresponding to zero drift case as done by the Rogers and Satchell as well.
+ $$  \begin{bmatrix}
+			E[(u^2-uc)^2]&E[(u^2-uc)(d^2-dc)]\\
+			E[(u^2-uc)(d^2-dc)]&E[(d^2-dc)^2]\\
+			\end{bmatrix}
+=\begin{bmatrix}
+\sigma^4/2&0.331\sigma^4\\
+0.331\sigma^4 & 2\sigma^4/2
+\end{bmatrix}$$
+%K VECTOR
+\item \textbf{$\vec{K}$ to calculate the family of estimators:}\\
+The groups formed by Rogers and Satchell which were drift independent came from the first two patterns. We will try to explore the third pattern in our results. Using these patterns, we have provided the matrix form to calculate the null space.
+
+$$\vec{K}_{RS}=
+\begin{bmatrix}
+E({u^2}_{\sigma_1 \mu_1})&E({d^2}_{\sigma_1 \mu_1})&E({c^2}_{\sigma_1 \mu_1})&E({ud}_{\sigma_1 \mu_1})&E({uc}_{\sigma_1 \mu_1})&E({dc}_{\sigma_1 \mu_1})\\
+E({u^2}_{\sigma_2 \mu_1})&E({d^2}_{\sigma_2 \mu_1})&E({c^2}_{\sigma_2 \mu_1})&E({ud}_{\sigma_2 \mu_1})&E({uc}_{\sigma_2 \mu_1})&E({dc}_{\sigma_2 \mu_1})\\
+E({u^2}_{\sigma_1 \mu_2})&E({d^2}_{\sigma_1 \mu_2})&E({c^2}_{\sigma_1 \mu_2})&E({ud}_{\sigma_1 \mu_2})&E({uc}_{\sigma_1 \mu_2})&E({dc}_{\sigma_1 \mu_2})\\
+E({u^2}_{\sigma_2 \mu_2})&E({d^2}_{\sigma_2 \mu_2})&E({c^2}_{\sigma_2 \mu_2})&E({ud}_{\sigma_2 \mu_2})&E({uc}_{\sigma_2 \mu_2})&E({dc}_{\sigma_2 \mu_2})\\
+\vdots&\vdots&\vdots&\vdots&\vdots&\vdots\\
+\vdots&\vdots&\vdots&\vdots&\vdots&\vdots
+\end{bmatrix}$$\\
+$$=\begin{bmatrix}
+\sigma_1/2 + {\theta^{ud}}_{\sigma_1 \mu_1}&\sigma_1/2 + {\theta^{dc}}_{\sigma_1 \mu_1}&
+{\theta^{ud}}_{\sigma_1 \mu_1}+{\theta^{dc}}_{\sigma_1 \mu_1}&.&{\theta^{uc}}_{\sigma_1 \mu_1}&{\theta^{dc}}_{\sigma_1 \mu_1}\\
+\sigma_2/2 + {\theta^{ud}}_{\sigma_2 \mu_1}&\sigma_2/2 + {\theta^{dc}}_{\sigma_2 \mu_1}&
+{\theta^{ud}}_{\sigma_2 \mu_1}+{\theta^{dc}}_{\sigma_2 \mu_1}&.&{\theta^{uc}}_{\sigma_2 \mu_1}&{\theta^{dc}}_{\sigma_2 \mu_1}\\
+\sigma_1/2 + {\theta^{ud}}_{\sigma_1 \mu_2}&\sigma_1/2 + {\theta^{dc}}_{\sigma_1 \mu_2}&
+{\theta^{ud}}_{\sigma_1 \mu_2}+{\theta^{dc}}_{\sigma_1 \mu_2}&.&{\theta^{uc}}_{\sigma_1 \mu_2}&{\theta^{dc}}_{\sigma_1 \mu_2}\\
+\sigma_2/2 + {\theta^{ud}}_{\sigma_2 \mu_2}&\sigma_2/2 + {\theta^{dc}}_{\sigma_2 \mu_2}&
+{\theta^{ud}}_{\sigma_2 \mu_2}+{\theta^{dc}}_{\sigma_2 \mu_2}&.&{\theta^{uc}}_{\sigma_2 \mu_2}&{\theta^{dc}}_{\sigma_2 \mu_2}\\
+\vdots&\vdots&\vdots&\vdots&\vdots&\vdots\\
+\vdots&\vdots&\vdots&\vdots&\vdots&\vdots
+\end{bmatrix}$$
+
+To explain the expected values, we will start with the 5th column ${\theta^{uc}}_{\sigma_1 \mu_1}$ is the expected value of $uc$ for a given volatility as $\sigma_1$ and drift as $mu_1$. From pattern 1, the expected value of $u^2$ (for the first row) is the sum of the expected value of $uc$ (which is equal to ${\theta^{uc}}_{\sigma_1 \mu_1}$ and $\sigma_2/2$. Similarly, the expected value of $d^2$ (for the first row) can be derived from the expected value of $dc$ (which is equal to ${\theta^{dc}}_{\sigma_1 \mu_1}$ using pattern 2. We used pattern 3 to derive the expected value of $c^2$ (for the first row) which is the sum of expected values of ${\theta^{uc}}_{\sigma_1 \mu_1}$ and ${\theta^{dc}}_{\sigma_1 \mu_1}$. The expected value of $ud$ does not form any pattern with any other quadratic extreme value and thus is omitted from the matrix.
+
+%COMP CASE
+\item \textbf{Complete Case:}\\
+The family of estimators for volatility of security price modelled as Brownian motion without drift
+$$\begin{bmatrix}
+{a_{RS}}^{u^2}\\
+{a_{RS}}^{d^2}\\
+{a_{RS}}^{c^2}\\
+{a_{RS}}^{ud}\\
+{a_{RS}}^{uc}\\
+{a_{RS}}^{dc}
+\end{bmatrix}=
+\begin{bmatrix}
+2\\
+0\\
+0\\
+0\\
+2\\
+0
+\end{bmatrix}+\alpha_1
+\begin{bmatrix}
+-1\\
+1\\
+-1\\
+0\\
+2\\
+0
+\end{bmatrix}+\alpha_2
+\begin{bmatrix}
+-1\\
+1\\
+0\\
+0\\
+1\\
+1
+\end{bmatrix}
+ $$
+ 
+Rogers and Satchell:\quad $\alpha_{RS}: \alpha_1=0\quad \alpha_2=1$
+
+%MV SOLUTION
+\item \textbf{Minimum Variance Solution:}\\
+Putting values of alpha in the complete case above gives the following solution:\\
+$${a_{RS}}^{u^2}=1\quad{a_{RS}}^{d^2}=1\quad{a_{RS}}^{c^2}=0\quad{a_{RS}}^{ud}=0$$
+$$\quad{a_{RS}}^{uc}=3\quad{a_{RS}}^{dc}=1$$
+Thus, we are able to reproduce the Rogers \& Satchell estimator using the new technique.
+\end{enumerate}
+
+\subsection{Brownian Motion with non-zero drift and positive jump}
+\subsubsection{Yang and Zhang Case}
+
+\begin{enumerate}
+%UC
+\item \textbf{Unbiased Constraint:}\\
+Yang and Zhang showed that it is impossible to construct a single period estimator which is independent of both drift and jump\cite{yang2000}. Thus, they constructed a multi period estimator which was independent of both drift and jump. The terms were grouped together to make them drift independent.
+$$ E(o_i-\bar{o})^2 =f\sigma^2\quad  E(c_i-\bar{c})^2 =(1-f)\sigma^2\quad 
+E({u_i}^2-uc_i+{d_i}^2-dc_i)=(1-f)\sigma^2$$
+
+%VAR COV MATRIX
+\item \textbf{Variance-Covariance Matrix $\sum_{YZ} $:}\\
+We can ignore the $o^2$ term from the variance covariance matrix as its coefficient is fixed as 1.
+ $$  \begin{bmatrix}
+			E(c_i-\bar{c})^4 & E[(c_i-\bar{c})^2({u_i}^2-uc_i+{d_i}^2-dc_i)]\\
+			E[(c_i-\bar{c})^2({u_i}^2-uc_i+{d_i}^2-dc_i)]&E({u_i}^2-uc_i+{d_i}^2-dc_i)^2
+			\end{bmatrix}$$
+$$=\begin{bmatrix}
+[(n+1)/(n-1)]\sigma^4(1-f)^2&\sigma^4(1-f)^2\\
+\sigma^4(1-f)^2&[\partial +n-1)/n]\sigma^4(1-f)^2
+\end{bmatrix}$$
+Where $\partial	= E({u_i}^2-uc_i+{d_i}^2-dc_i)^2 \sigma^4(1-f)^2$ and $n=$number of periods.
+%K VECTOR
+\item \textbf{$\vec{K}$ to calculate the family of estimators:}\\
+As an unbiased estimator can be obtained by only using the multi period data and grouping, we have directly considered groups in the matrix so that it is convenient to calculate the family of estimator rather than putting individual quadratic extreme values.
+\begin{multline}
+$$\vec{K}_{YZ}=
+\begin{bmatrix}
+E{(c_i-\bar{c})^2}_{{\sigma_1}^2 \mu_1 f_1}&E({{u_i}^2-uc_i+{d_i}^2-dc_i})_{{\sigma_1}^2 \mu_1 f_1}\\
+E{(c_i-\bar{c})^2}_{{\sigma_1}^2 \mu_1 f_2}&E({{u_i}^2-uc_i+{d_i}^2-dc_i})_{{\sigma_1}^2 \mu_1 f_2}\\
+E{(c_i-\bar{c})^2}_{{\sigma_1}^2 \mu_2 f_1}&E({{u_i}^2-uc_i+{d_i}^2-dc_i})_{{\sigma_1}^2 \mu_2 f_1}\\
+E{(c_i-\bar{c})^2}_{{\sigma_1}^2 \mu_2 f_2}&E({{u_i}^2-uc_i+{d_i}^2-dc_i})_{{\sigma_1}^2 \mu_2 f_2}\\
+E{(c_i-\bar{c})^2}_{{\sigma_2}^2 \mu_1 f_1}&E({{u_i}^2-uc_i+{d_i}^2-dc_i})_{{\sigma_2}^2 \mu_1 f_1}\\
+E{(c_i-\bar{c})^2}_{{\sigma_2}^2 \mu_1 f_2}&E({{u_i}^2-uc_i+{d_i}^2-dc_i})_{{\sigma_2}^2 \mu_1 f_2}\\
+E{(c_i-\bar{c})^2}_{{\sigma_2}^2 \mu_2 f_1}&E({{u_i}^2-uc_i+{d_i}^2-dc_i})_{{\sigma_2}^2 \mu_2 f_1}\\
+E{(c_i-\bar{c})^2}_{{\sigma_2}^2 \mu_2 f_2}&E({{u_i}^2-uc_i+{d_i}^2-dc_i})_{{\sigma_2}^2 \mu_2 f_2}\\
+\vdots&\vdots\\
+\vdots&\vdots
+\end{bmatrix}$$\\
+$$=\begin{bmatrix}
+{(1-f)^2{\sigma_1}^2}_{{\sigma_1}^2 \mu_1 f_1}&{(1-f)^2{\sigma_1}^2}_{{\sigma_1}^2 \mu_1 f_1}\\
+{(1-f)^2{\sigma_1}^2}_{{\sigma_1}^2 \mu_1 f_2}&{(1-f)^2{\sigma_1}^2}_{{\sigma_1}^2 \mu_1 f_2}\\
+{(1-f)^2{\sigma_1}^2}_{{\sigma_1}^2 \mu_2 f_1}&{(1-f)^2{\sigma_1}^2}_{{\sigma_1}^2 \mu_2 f_1}\\
+{(1-f)^2{\sigma_1}^2}_{{\sigma_1}^2 \mu_2 f_2}&{(1-f)^2{\sigma_1}^2}_{{\sigma_1}^2 \mu_2 f_2}\\
+{(1-f)^2{\sigma_2}^2}_{{\sigma_2}^2 \mu_1 f_1}&{(1-f)^2{\sigma_2}^2}_{{\sigma_2}^2 \mu_1 f_1}\\
+{(1-f)^2{\sigma_2}^2}_{{\sigma_2}^2 \mu_1 f_2}&{(1-f)^2{\sigma_2}^2}_{{\sigma_2}^2 \mu_1 f_2}\\
+{(1-f)^2{\sigma_2}^2}_{{\sigma_2}^2 \mu_2 f_1}&{(1-f)^2{\sigma_2}^2}_{{\sigma_2}^2 \mu_2 f_1}\\
+{(1-f)^2{\sigma_2}^2}_{{\sigma_2}^2 \mu_2 f_2}&{(1-f)^2{\sigma_2}^2}_{{\sigma_2}^2 \mu_2 f_2}\\
+\vdots&\vdots\\
+\vdots&\vdots
+\end{bmatrix}$$
+\end{multline}
+
+%COMP CASE
+\item \textbf{Complete Case:}\\
+The family of estimators for volatility of security price modelled as Brownian motion without drift
+$$\begin{bmatrix}
+{a_{YZ}}^{(c_i-\bar{c})^2}\\
+{a_{YZ}}^{({{u_i}^2-uc_i+{d_i}^2-dc_i})}\\
+{a_{YZ}}^{(o_i-\bar{o})^2}
+\end{bmatrix}=
+\begin{bmatrix}
+1\\
+1\\
+0
+\end{bmatrix}+\alpha_1
+\begin{bmatrix}
+1\\
+1\\
+0
+\end{bmatrix}
+ $$
+ The solution has the first vector as the particular solution and the second vector as the basis vector which comprise the null space for the estimator. Different values of $\alpha_1$ will give different estimators. The form was provided by Yang and Zhang as well in their paper where they used $k_0$ instead of $\alpha_1$. Yang and Zhang estimator is derived with the following values.\\
+Yang and Zhang Estimator (2 period case):\quad $\alpha_{YZ}: \alpha_1=0.0783\quad $
+
+%MV SOLUTION
+\item \textbf{Minimum Variance Solution:}\\
+Putting values of alpha in the complete case above gives the following solution:\\
+$${a_{YZ}}^{(c_i-\bar{c})^2}=1.0783\quad {a_{YZ}}^{({{u_i}^2-uc_i+{d_i}^2-dc_i})}=1.0783\quad {a_{YZ}}^{(o_i-\bar{o})^2}=0$$
+Thus it is possible to get the Yang and Zhang estimator using the new technique.
+\end{enumerate}
+
+\section{Conclusion}
+In conclusion, this paper has tried to develop a methodology using which a family of estimators can be obtained and the family can be used to 
+re-derive the minimum variance estimators for varying assumptions of Brownian motion as showcased by various authors in the past. 
+Using the methodology, we were able to improve the Parkinson estimator. We were also able to construct an estimator which is best in the class of estimators that use just the high and low prices. This methodology for calculating minimum variance estimator can be extended for "n assets case" as well\footnote{A work in progress}. Also, the methodology can be tested on security price following more realistic models.\\
+
+
+\medskip
+\newpage
+\bibliographystyle{apacite}
+\bibliography{paper}
+\end{document}

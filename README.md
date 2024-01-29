@@ -1,4 +1,4 @@
-#A Computational Method to Generate Family of Extreme Value Volatility Estimators
+# A Computational Method to Generate Family of Extreme Value Volatility Estimators
 
 An algorithm to construct a family of unbiased extreme value volatility estimators is developed
 when the log prices of assets follow simple Brownian motion with drift and jump. From this family

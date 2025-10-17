@@ -1,10 +1,11 @@
-# A Computational Method to Generate Family of Extreme Value Volatility Estimators
+# A Computational Method to Generate a Family of Extreme-Value Volatility Estimators
 
-An algorithm to construct a family of unbiased extreme value volatility estimators is developed
-when the log prices of assets follow simple Brownian motion with drift and jump. From this family
-of estimators, the minimum variance estimator can be computed and is found to be competitive to
-the estimator of Parkinson. This technique also constructs an estimator which is best in the class of
-estimators that use just the high and low price of an asset. Other volatility estimators of Garman
-& Klass, Yang & Zhang and Rogers & Satchell are recovered. The novelty of this approach is that
-it is constructive and, moreover it can be extended to compute estimators when prices follow more
-realistic models.
+A framework is developed to construct estimators of volatility derived from extreme
+prices of a security, such as high, low, opening, and closing prices, using null space
+decomposition. This framework not only reproduces the classical estimators, such as
+the Parkinson (1980) and Garman and Klass (1980) estimators, but also improves the
+efficiency of some of the classical estimators, including the Parkinson (1980) estimator.
+The estimator that utilizes only high and low prices, as derived from this method,
+achieves a 17% reduction in variance compared to Parkinson (1980), which also utilizes
+high and low prices. Extension of this framework is possible to cases where prices are
+observed to drift and discontinuities in prices exist, due to the close of the trading day.
